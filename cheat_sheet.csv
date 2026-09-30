@@ -1,0 +1,33 @@
+Befehl,Tut
+ros2 topic list,zeigt alle aktiven topics an
+source /opt/ros/jazzy/setup.bash,ROS 2 für das aktuelle Terminal verfügbar machen
+source ~/ros2_ws/install/setup.bash,Eigenen Workspace zusätzlich verfügbar machen
+ros2 pkg create \,Python-Package erstellen
+"    --build-type ament_python \"
+"    my_first_package \"
+"    --dependencies rclpy std_msgs"
+ros2 pkg list,Packages anzeigen
+ros2 pkg list | grep my_first_package,Nach einem bestimmten Package suchen
+cd ~/ros2_ws,Workspace bauen
+colcon build
+Danach:
+source install/setup.bash
+ros2 run <package> <executable>,Node starten (muss in entry points in setup.py aufgefuehrt sein)
+ros2 node list,Laufende Nodes anzeigen
+ros2 node info /my_publisher,Informationen über einen Node
+ros2 topic list,Alle momentan vorhandenen Topics
+ros2 topic info /my_topic,Informationen über ein Topic
+ros2 topic echo /my_topic,Nachrichten aus topic live anzeigen
+ros2 topic hz /my_topic,topic Frequenz messen
+"ros2 topic pub --once /my_topic std_msgs/msg/String ""{data: 'Hallo ROS'}""",Selbst Nachrichten veroeffentlichen Einmalig
+"ros2 topic pub /my_topic std_msgs/msg/String ""{data: 'Hallo ROS'}""",Selbst Nachrichten veroeffentlichen kontinuiierlich
+ros2 service call /spawn turtlesim/srv/Spawn \,Selbst service ansprechen Einmalig
+"{x: 2.0, y: 3.0, theta: 0.0, name: 'bob'}",
+ros2 interface show example_interfaces/srv/AddTwoInts,Message/Service - Interface anzeigen lassen
+rqt,"manuell in die ereignisse einmischen bei topics, services etc"
+ros2 param list,zeigt die parameter aller laufenden nodes an
+ros2 param get /<node_name> <parameter>,zeigt den wert eines parameters eines nodes an
+ros2 param set /<node_name> <parameter> <value>,setzt den wert eines parameters eines nodes auf einen wert
+ros2 param dump <node_name>,speichert alle parameter eines nodes in yaml
+ros2 param load <node_name> <parameter_file>,laedt parameter in node rein aus yaml
+ros2 run <package_name> <executable_name> --ros-args --params-file <file_name>,"laedt parameter in node rein aus yaml bei start"
