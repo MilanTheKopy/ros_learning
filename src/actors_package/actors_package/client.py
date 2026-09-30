@@ -24,7 +24,7 @@ class MyClient(Node):
 
         req = CoolnessTest.Request()
         req.name = random.choice(['Milan', 'Terrence', 'Herbert'])
-        print(f"We ask for the coolness of: {req.name}")
+        self.get_logger().info(f"We ask for the coolness of: {req.name}")
         future_response = self.service_client.call_async(
             request=req
         )
@@ -34,7 +34,7 @@ class MyClient(Node):
     def response_callback(self, future_response):
 
         response = future_response.result()
-        print(f"We got the anwer: {response}")
+        self.get_logger().info(f"We got the anwer: {response}")
 
 def main(args=None):
     rclpy.init(args=args)
