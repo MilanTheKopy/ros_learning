@@ -1,9 +1,8 @@
 import os
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from ros_gz_bridge.actions import RosGzBridge
@@ -24,6 +23,11 @@ def generate_launch_description():
         'sensor_tutorial.sdf'
     )
 
+    models_path = os.path.join(
+        simulation_pkg,
+        'models'
+    )
+
     gz_launch_path = os.path.join(
         ros_gz_sim_pkg,
         'launch',
@@ -33,6 +37,10 @@ def generate_launch_description():
     # -------------------------
     # Gazebo
     # -------------------------
+    gazebo_resource_path = SetEnvironmentVariable(
+        name='GZ_SIM_RESOURCE_PATH',
+        value=models_path
+    )
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gz_launch_path),
@@ -67,7 +75,9 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        gazebo_resource_path,
         gazebo,
         bridge,
         controller_node,
+        
     ])

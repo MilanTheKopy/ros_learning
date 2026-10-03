@@ -4,7 +4,7 @@ project(simulation_package)
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY worlds
+  DIRECTORY worlds models
   DESTINATION share/${PROJECT_NAME}
 )
 
