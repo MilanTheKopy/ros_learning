@@ -31,6 +31,6 @@ ros2 param set /<node_name> <parameter> <value>,setzt den wert eines parameters 
 ros2 param dump <node_name>,speichert alle parameter eines nodes in yaml
 ros2 param load <node_name> <parameter_file>,laedt parameter in node rein aus yaml
 ros2 run <package_name> <executable_name> --ros-args --params-file <file_name>,laedt parameter in node rein aus yaml bei start
-ros2 launch simulation_package simulation.launch.py,launch file starten
+ros2 launch simulation_package simulation.launch.py,launch file starten (muss in setup.py vermerkt sein)
 gz sim building_robot.sdf,open sdf in gazeboo
 ros2 interface show sensor_msgs/msg/LaserScan,strukturen von messages auslesen

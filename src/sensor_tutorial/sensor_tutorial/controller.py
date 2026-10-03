@@ -10,7 +10,7 @@ class Controller(Node):
     def __init__(self):
         super().__init__('controller')
 
-        self.get_logger().info(f'Controller created')
+        #self.get_logger().info(f'Controller created')
         self.lidar_subscription = self.create_subscription(
                     msg_type = LaserScan,
                     topic = '/lidar',
@@ -28,7 +28,7 @@ class Controller(Node):
     def lidar_callback(self, msg):
         front_range = msg.ranges[int(len(msg.ranges)/2)]
         right_side_range = msg.ranges[int(len(msg.ranges)/4)]
-        self.get_logger().info(f'Controller received lidar data. front_range: {front_range}, right_side_range: {right_side_range}')
+        #self.get_logger().info(f'Controller received lidar data. front_range: {front_range}, right_side_range: {right_side_range}')
 
         response = Twist()
         if min(front_range, right_side_range)<= MIN_WALL_DISTANCE:
