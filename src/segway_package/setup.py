@@ -33,6 +33,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            f'controller = {package_name}.controller:main',
         ],
     },
 )

@@ -13,6 +13,8 @@ def generate_launch_description():
     # -------------------------
     # Paths
     # -------------------------
+    
+    package_name = 'segway_package'
 
     simulation_pkg = get_package_share_directory('simulation_package')
     ros_gz_sim_pkg = get_package_share_directory('ros_gz_sim')
@@ -45,16 +47,16 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gz_launch_path),
         launch_arguments={
-            'gz_args': f'-r {world_path}'
+            'gz_args': f'{world_path}'
         }.items()
     )
 
     # -------------------------
     # Gazebo <-> ROS bridge
     # -------------------------
-    """
+  
     bridge_config = os.path.join(
-            get_package_share_directory('sensor_tutorial'),
+            get_package_share_directory(package_name),
             'config',
             'bridge_config.yaml'
         ) 
@@ -68,17 +70,17 @@ def generate_launch_description():
     # -------------------------
 
     controller_node = Node(
-        package='sensor_tutorial',
-        namespace='sensor_tutorial',
+        package=package_name,
+        namespace=package_name,
         executable='controller',
         name='controller',
         output='screen'
     )
-    """
+  
     return LaunchDescription([
         gazebo_resource_path,
         gazebo,
-        #bridge,
-        #controller_node,
+        bridge,
+        controller_node,
         
     ])

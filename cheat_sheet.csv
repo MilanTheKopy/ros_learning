@@ -34,3 +34,4 @@ ros2 run <package_name> <executable_name> --ros-args --params-file <file_name>,l
 ros2 launch simulation_package simulation.launch.py,launch file starten (muss in setup.py vermerkt sein)
 gz sim building_robot.sdf,open sdf in gazeboo
 ros2 interface show sensor_msgs/msg/LaserScan,strukturen von messages auslesen
+gz topic -i -t /imu,infos zu gz topic
