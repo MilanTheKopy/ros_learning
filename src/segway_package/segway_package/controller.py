@@ -3,23 +3,25 @@ from datetime import datetime
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist 
+
 
 MIN_WALL_DISTANCE = 1
 MAX_VEL= 6
 MAX_SLOPE = 0.07
 PID_SLOPE_BY_VEL = {
-    "p": 20,
-    "i" : 20,
+    "p": 1000,
+    "i" : 0,
     "d": 20,
     "integrated_controlled_value_diff": 0,
     "last_controlled_value": 0
 }
 PID_VEL_BY_SLOPE = {
-    "p": 20,
-    "i" : 20,
-    "d": 20,
+    "p": 0.00001,
+    "i" : 0.00001,
+    "d": 0.00001,
     "integrated_controlled_value_diff": 0,
     "last_controlled_value": 0
 }
@@ -30,10 +32,17 @@ class Controller(Node):
         super().__init__('controller')
 
 
-        self.lidar_subscription = self.create_subscription(
+        self.imu_subscription = self.create_subscription(
                     msg_type = Imu,
                     topic = '/imu',
                     callback=self.imu_callback,
+                    qos_profile=10,
+                    
+                )
+        self.odo_subscription = self.create_subscription(
+                    msg_type = Odometry,
+                    topic = '/odometry',
+                    callback=self.odo_callback,
                     qos_profile=10,
                     
                 )
@@ -43,32 +52,40 @@ class Controller(Node):
                     10
         )
 
-        self.last_control_loop = datetime.now()
+        self.last_control_loop = self.get_clock().now()
         self.cmd = Twist()
+        self.odometry = Odometry()
+    
         self.speed_setpoint = 0
 
 
-  
+    def odo_callback(self, msg):
+
+        self.odometry = msg
 
     def imu_callback(self, msg):
 
         
         slope = msg.orientation.y
-        now = datetime.now()
-        dt = (now  - self.last_control_loop).total_seconds()
+        now = self.get_clock().now()
+        dt = (now  - self.last_control_loop).nanoseconds / 1e9
         self.last_control_loop = now
-        interval = 120
-        if now.second%interval < interval/2:
-            self.speed_setpoint = 3
-        else:
-            self.speed_setpoint = -3
+        interval = 60
+        slope_setpoint = 0.04
+        if now.nanoseconds / 1e9 % interval < interval/2:
+            slope_setpoint = -0.04
+   
+            
 
-
-        self.slope_setpoint = self.pid_control(controlled_variable= self.cmd.linear.x, setpoint=self.speed_setpoint, dt=dt, pid_params = PID_VEL_BY_SLOPE)
-        self.slope_setpoint = min(MAX_SLOPE , max(-MAX_SLOPE , self.slope_setpoint))
-        cmd_vel = self.pid_control(controlled_variable= slope, setpoint=self.slope_setpoint, dt=dt, pid_params = PID_SLOPE_BY_VEL)
+        speed_setpoint= 0
+        actual_vel = self.odometry.twist.twist.linear.x
         
-        self.cmd.linear.x = float(min(MAX_VEL, max(-MAX_VEL, cmd_vel)))
+        #slope_setpoint = self.pid_control(controlled_variable= actual_vel, setpoint=speed_setpoint, dt=dt, pid_params = PID_VEL_BY_SLOPE)
+        #slope_setpoint = 0.02#min(MAX_SLOPE , max(-MAX_SLOPE , slope_setpoint)) 
+        cmd_vel = self.pid_control(controlled_variable= slope, setpoint=slope_setpoint, dt=dt, pid_params = PID_SLOPE_BY_VEL)
+        cmd_vel = float(min(MAX_VEL, max(-MAX_VEL, cmd_vel)))
+        self.get_logger().info(f"actual_vel: {actual_vel}, speed_setpoint: {speed_setpoint}, slope_setpoint: {slope_setpoint}, slope: {slope}, dt: {dt}")
+        self.cmd.linear.x = cmd_vel
         self.twist_publisher.publish(
                             self.cmd
                         )
@@ -82,10 +99,12 @@ class Controller(Node):
 
         p = pid_params["p"] * diff
         i = pid_params["i"] * pid_params["integrated_controlled_value_diff"]
-        d = pid_params["d"] * dcontrol_variable/dt
-        self.get_logger().info(
+        d= 0
+        if dt >0:
+            d = pid_params["d"] * dcontrol_variable/dt
+        '''self.get_logger().info(
                     f'Controller publishing p: {p}, i: {i}, d: {d} for slope: {controlled_variable} with dt: {dt}'
-                )
+                )'''
         return p + i + d
 
 

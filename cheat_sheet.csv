@@ -35,3 +35,5 @@ ros2 launch simulation_package simulation.launch.py,launch file starten (muss in
 gz sim building_robot.sdf,open sdf in gazeboo
 ros2 interface show sensor_msgs/msg/LaserScan,strukturen von messages auslesen
 gz topic -i -t /imu,infos zu gz topic
+https://github.com/gazebosim/ros_gz/blob/ros2/ros_gz_bridge/README.md?utm_source=chatgpt.com,quelle zum bridgen gz <->ros
+"Rot = X-Achse, Gruen = Y-Achse, Blau = Z-Achse",konvention in gazebo

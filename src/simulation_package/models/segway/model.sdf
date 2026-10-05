@@ -9,7 +9,7 @@
                 <update_rate>100</update_rate>
                 <always_on>true</always_on>
             </sensor>
-            <pose relative_to='__model__'>0 0 1 0 0 0</pose>
+            <pose relative_to='__model__'>0 0 0.25 0 0 0</pose>
             
         
             <inertial auto="true"> <!--inertial properties of the link mass, inertia matix-->
@@ -17,6 +17,7 @@
             </inertial>
 
             <visual name='visual'>
+                <pose>0 0 0.75 0 0 0</pose>
                 <geometry>
                     <box>
                         <size>0.2 0.5 2.0</size>
@@ -30,6 +31,7 @@
                 </material>
             </visual>
             <collision name='collision'>
+            <pose>0 0 0.75 0 0 0</pose>
                 <geometry>
                     <box>
                         <size>0.2 0.5 2.0</size>
@@ -39,7 +41,7 @@
         </link>
         
         <link name='left_wheel'>
-            <pose relative_to="chassis">0.0 0.35 -0.75 -1.5707 0 0</pose>
+            <pose relative_to="chassis">0.0 0.35 0.0 -1.5707 0 0</pose>
             <inertial auto="true">
                 <mass>1.0</mass>
             </inertial>
@@ -83,7 +85,7 @@
 
         <!--The same as left wheel but with different position-->
         <link name='right_wheel'>
-            <pose relative_to="chassis">0.0 -0.35 -0.75 -1.5707 0 0</pose> <!--angles are in radian-->
+            <pose relative_to="chassis">0.0 -0.35 0.0 -1.5707 0 0</pose> <!--angles are in radian-->
             <inertial auto="true">
                 <mass>1.0</mass>
             </inertial>
@@ -165,7 +167,7 @@
             <right_joint>right_wheel_joint</right_joint>
             <wheel_separation>0.7</wheel_separation>
             <wheel_radius>0.4</wheel_radius>
-            <odom_publish_frequency>1</odom_publish_frequency>
+            <odom_publish_frequency>50</odom_publish_frequency>
             <topic>cmd_vel</topic>
         </plugin>
     </model>

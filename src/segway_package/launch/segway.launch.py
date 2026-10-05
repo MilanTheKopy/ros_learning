@@ -74,6 +74,7 @@ def generate_launch_description():
         namespace=package_name,
         executable='controller',
         name='controller',
+        parameters=[{'use_sim_time': True}],
         output='screen'
     )
   
